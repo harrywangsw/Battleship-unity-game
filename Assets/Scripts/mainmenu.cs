@@ -20,7 +20,7 @@ public class mainmenu : NetworkBehaviour
         c = GameObject.Find("Camera");
         cam = c.GetComponent<Camera>();
         GameObject.Find("maincanvas").GetComponent<Canvas>().enabled = false;
-        interval = 12;
+        interval = 16;
         defineobjects(0);
         playership = GameObject.FindGameObjectsWithTag("ship");
 
@@ -35,9 +35,9 @@ public class mainmenu : NetworkBehaviour
             for (i = 0; i <= 41; i++)
             {
 
-                for (j = 0; j <= 35; j++)
+                for (j = 0; j <= 25; j++)
                 {
-                    if ((s.transform.position - text[i,j].transform.position).magnitude <10.0f)
+                    if ((s.transform.position - text[i,j].transform.position).magnitude <12.0f)
                     {
                         s.transform.position = text[i, j].transform.position;
                         if (Input.GetMouseButtonDown(1))
@@ -63,7 +63,7 @@ public class mainmenu : NetworkBehaviour
         for (i = 0; i <= 41; i++)
         {
 
-            for (j = 0; j <= 35; j++)
+            for (j = 0; j <= 25; j++)
             {
                 text[i, j] = (GameObject)(Instantiate(GameObject.Find("probabilitytext"), new Vector3(0,0,0), Quaternion.identity));
                 text[i, j].transform.SetParent(GameObject.Find("gridcanvas").transform);

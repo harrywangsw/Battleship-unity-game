@@ -33,28 +33,23 @@ public class movecam : NetworkBehaviour
 
             pos.x += velocity.x;
             pos.y += velocity.y;
-            //if (gameObject.name == "focus1" && (pos.x >= 328 || pos.x <= -20))
-            //{
-            //pos.x -= velocity.x;
-            //}
-
-            //if (gameObject.name == "focus1" && (pos.y <= -20 || pos.y >= 288))
-            //{
-            //pos.y -= velocity.y;
-            //}
+            if (pos.x >= 680 || pos.x <= 0)
+            {
+                pos.x -= velocity.x;
+            }
+            if (pos.y >= 290 || pos.y <= 0)
+            {
+                pos.y -= velocity.y;
+            }
 
             gameObject.transform.position = pos;
             pos.z += 10;
-            GameObject.Find("background").transform.position = pos;
             pos.z -= 10;
             Camera.main.GetComponent<Camera>().orthographicSize = Camera.main.GetComponent<Camera>().orthographicSize - Input.mouseScrollDelta.y * 2.0f;
             if (Camera.main.GetComponent<Camera>().orthographicSize <= 0)
             {
                 Camera.main.GetComponent<Camera>().orthographicSize = Camera.main.GetComponent<Camera>().orthographicSize + Input.mouseScrollDelta.y * 2.0f;
             }
-            scale.x = Camera.main.GetComponent<Camera>().orthographicSize * 189.8f;
-            scale.y = Camera.main.GetComponent<Camera>().orthographicSize * 204.5f;
-            GameObject.Find("background").transform.localScale = scale;
         }
     }
 }

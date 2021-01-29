@@ -20,18 +20,20 @@ public class drawgrid : NetworkBehaviour
     public bool scoutable, attackable, flip, movable = false;
     public Sprite scouted, unscouted;
     public int[] hitted, hits;
-    //public const int[] health = new int[5] { 1, 1, 1, 1, 1 };
+    public  int[] health = new int[] { 1, 2, 3, 4, 5 };
 
     void Start()
     {
-        //health = new int[5];
-        //health[0] = 5;
+        for (i = 1; i <= 5; i++)
+        {
+            health[i] = i;
+        }
         hitted = new int[5];
         hits = new int[5];
         interval = GameObject.Find("Battleships-1200x675").GetComponent<mainmenu> ().interval;
         for (i = 0; i <= 41; i++)
         {
-            for (j = 0; j <= 35; j++)
+            for (j = 0; j <= 25; j++)
             {
                 dot[i, j] = GameObject.Find("Battleships-1200x675").GetComponent<mainmenu>().text[i, j];
             }
@@ -80,13 +82,13 @@ public class drawgrid : NetworkBehaviour
     void Update()
     {
         quantumfield(enemyship);
-        if (gameObject.tag == "1" && isLocalPlayer)
+        /*if (gameObject.tag == "1" && isLocalPlayer)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                empty[0].transform.position += new Vector3(12, 0, 0);
+                Cmdchangeposition();
             }
-        }
+        }*/
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit raycastHit;
@@ -187,6 +189,14 @@ public class drawgrid : NetworkBehaviour
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
                     GameObject.Find("hit").GetComponent<Text>().text = "hit";
                     calhit(x,y);
+                    for(i=0; i<=4; i++)
+                    {
+                        if(hits[i] == health[i + 1])
+                        {
+                            GameObject.Find("hit").GetComponent<Text>().text = "hit!"+enemyship[i].name+" destroyed";
+                        }
+                    }
+
                 }
                 GameObject.Find("attack").transform.localScale = new Vector3(0, 0, 0);
             }
@@ -211,7 +221,7 @@ public class drawgrid : NetworkBehaviour
         
         for(i=0; i<= 41; i++)
         {
-            for(j=0; j<=35; j++)
+            for(j=0; j<=25; j++)
             {
                 for (k = 0; k < ship.Length; k++)
                 {
@@ -228,7 +238,7 @@ public class drawgrid : NetworkBehaviour
         quantumfield(myship);
         for (i = 0; i <= 41; i++)
         {
-            for (j = 0; j <= 35; j++)
+            for (j = 0; j <= 25; j++)
             {
                 for (k = 0; k < enemyship.Length; k++)
                 {
@@ -255,7 +265,7 @@ public class drawgrid : NetworkBehaviour
 
         for (i = 0; i <= 41; i++)
         {
-            for (j = 0; j <= 35; j++)
+            for (j = 0; j <= 25; j++)
             {
                
 
@@ -297,7 +307,7 @@ public class drawgrid : NetworkBehaviour
         }
         for (i=0; i <= 41; i++)
         {
-            for (j = 0; j <= 35; j++) {
+            for (j = 0; j <= 25; j++) {
                 dot[i, j].GetComponent<Text>().color = new Color(0, 255, 0, 225);
                 gameObject.GetComponent<changesprite>().ChangeTileTexture(new Vector3Int(i, j, 0), unscouted);
             }
@@ -341,18 +351,6 @@ public class drawgrid : NetworkBehaviour
         }
     }
 
-    public void setenemy(GameObject[] playership, int[] hits)
-    {
-        for(i=0; i<=4; i++)
-        {
-            empty[i].transform.position = playership[i].transform.position;
-        }
-
-        hitsrecorder.transform.position = new Vector3(hits[0], hits[1], hits[2]);
-        hitsrecorder.transform.localScale = new Vector3(hits[3], hits[4], 0);
-        GameObject.Find("endturn").GetComponent<click>().changeactive();
-    }
-
     public void recieveenemy()
     {
         for (i = 0; i <= 4; i++)
@@ -365,60 +363,44 @@ public class drawgrid : NetworkBehaviour
         hitted[3] = Mathf.RoundToInt(hitsrecorder.transform.rotation.x);
         hitted[4] = Mathf.RoundToInt(hitsrecorder.transform.rotation.y);
 
-        if (GameObject.Find("record active player").transform.position.x == 2.0f && gameObject.tag == "2" && isLocalPlayer)
+        if (Mathf.Round(GameObject.Find("record active player").transform.position.x) == 2 && gameObject.tag == "2" && isLocalPlayer)
         {
             GameObject.Find("maincanvas").GetComponent<CanvasScaler>().scaleFactor = 1;
         }
-        if (GameObject.Find("record active player").transform.position.x == 1.0f && gameObject.tag == "1" && isLocalPlayer)
+        if (Mathf.Round(GameObject.Find("record active player").transform.position.x) == 1 && gameObject.tag == "1" && isLocalPlayer)
         {
             GameObject.Find("maincanvas").GetComponent<CanvasScaler>().scaleFactor = 1;
         }
-        else
+        if (Mathf.Round(GameObject.Find("record active player").transform.position.x).ToString() != gameObject.tag && isLocalPlayer)
         {
-            GameObject.Find("maincanvas").GetComponent<CanvasScaler>().scaleFactor = 0;
+            GameObject.Find("maincanvas").GetComponent<CanvasScaler>().scaleFactor = 0.01f;
         }
     }
 
-    
-    public void Cmdendsturn(/*GameObject[] playership, */int[] hits)
+    [Command]
+    public void Cmdsetenemy(Vector3[] playershippos, int[] hits)
     {
-        Debug.Log("command issued");
-    }
-
-    public void Rpcswitchenemy(GameObject[] enemyship, int[] hitted)
-    {
-
-        Debug.Log("switchenemy");
-        /*Debug.Log("switchenemy");
-        setenemy(enemyship, hitted);
-        setship();
-        for (i = 0; i <= 41; i++)
+        for(i=0; i<=4; i++)
         {
-            for (j = 0; j <= 35; j++)
-            {
-                dot[i, j].GetComponent<Text>().text = gameObject.tag + ship[0].transform.position;
-
-            }
+            Debug.Log(empty[i].transform.position);
+            empty[i].transform.position = playershippos[i];
         }
-        for (i = 0; i <= 4; i++)
+
+        hitsrecorder.transform.position = new Vector3(hits[0], hits[1], hits[2]);
+        hitsrecorder.transform.localScale = new Vector3(hits[3], hits[4], 0);
+        Debug.Log("enemysetted");
+
+        if (Mathf.Round(GameObject.Find("record active player").transform.position.x) == 2)
         {
-            switch (hits[i])
-            {
-                case 0:
-                    myship[i].GetComponent<SpriteRenderer>().color = Color.yellow;
-                    break;
-                case 1:
-                    myship[i].GetComponent<SpriteRenderer>().color = new Color(255, 165, 0, 255);
-                    break;
-                case 2:
-                    myship[i].GetComponent<SpriteRenderer>().color = Color.red;
-                    break;
-                case 3:
-                    myship[i].GetComponent<SpriteRenderer>().color = new Color(255, 20, 147, 255);
-                    break;
-            }
-        }*/
+            GameObject.Find("record active player").transform.position = new Vector3(1, 0, 0);
+        }
+        if(Mathf.Round(GameObject.Find("record active player").transform.position.x) == 1)
+        {
+            GameObject.Find("record active player").transform.position = new Vector3(2, 0, 0);
+        }
     }
+
+  
 
    
 }
