@@ -7,10 +7,10 @@ using Mirror;
 public class drawgrid : NetworkBehaviour
 {
     Vector3 gridx, gridy;
+    Vector3[] temp = new Vector3[5];
     int interval;
     int i, j, k;
-    public GameObject[] myship;
-    public GameObject[] enemyship, empty = new GameObject[5];
+    public GameObject[] enemyship, empty, myship = new GameObject[5];
     GameObject lastship, hitsrecorder;
     public Material outline, original;
     public Sprite sea, end;
@@ -20,14 +20,15 @@ public class drawgrid : NetworkBehaviour
     public bool scoutable, attackable, flip, movable = false;
     public Sprite scouted, unscouted;
     public int[] hitted, hits;
-    public  int[] health = new int[] { 1, 2, 3, 4, 5 };
+    public  int[] health = new int[] {1,1,1,1,1};
+    public int shipdestroyed = 0;
 
     void Start()
     {
-        for (i = 1; i <= 5; i++)
+        /*for (i = 0; i <= 4; i++)
         {
-            health[i] = i;
-        }
+            health[i] = i+1;
+        }*/
         hitted = new int[5];
         hits = new int[5];
         interval = GameObject.Find("Battleships-1200x675").GetComponent<mainmenu> ().interval;
@@ -43,7 +44,7 @@ public class drawgrid : NetworkBehaviour
             hits[i] = 0;
             hitted[i] = 0;
         }
-        myship = GameObject.FindGameObjectsWithTag("ship");
+        definemyship();
         enemyship = GameObject.FindGameObjectsWithTag("empty");
         empty = GameObject.FindGameObjectsWithTag("empty");
         hitsrecorder = GameObject.Find("hit recorder");
@@ -67,7 +68,6 @@ public class drawgrid : NetworkBehaviour
                 for (i = 0; i <= 4; i++)
                 {
                     empty[i].transform.position = myship[i].transform.position;
-                    Debug.Log("starting empty location: " + empty[i].transform.position);
                 }
             }
         }
@@ -81,7 +81,7 @@ public class drawgrid : NetworkBehaviour
     
     void Update()
     {
-        quantumfield(enemyship);
+        quantumfield(empty);
         /*if (gameObject.tag == "1" && isLocalPlayer)
         {
             if (Input.GetKeyDown(KeyCode.X))
@@ -89,7 +89,7 @@ public class drawgrid : NetworkBehaviour
                 Cmdchangeposition();
             }
         }*/
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&isLocalPlayer)
         {
             RaycastHit raycastHit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -104,33 +104,54 @@ public class drawgrid : NetworkBehaviour
         {
             displaytactical();
         }
-        if (movable)
+        if (movable&&isLocalPlayer&&lastship)
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                lastship.transform.position = new Vector3(lastship.transform.position.x - interval, lastship.transform.position.y, lastship.transform.position.z);
+                lastship.transform.rotation = Quaternion.Euler(Vector3.forward*90);
                 movable = false;
             }
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                lastship.transform.position = new Vector3(lastship.transform.position.x + interval, lastship.transform.position.y, lastship.transform.position.z);
+                lastship.transform.rotation = Quaternion.Euler(Vector3.forward * -90);
                 movable = false;
             }
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                lastship.transform.position = new Vector3(lastship.transform.position.x, lastship.transform.position.y+interval, lastship.transform.position.z);
+                if (lastship.transform.rotation.z == 90 || lastship.transform.rotation.z == -90)
+                {
+                    lastship.transform.position += new Vector3(interval, 0, 0);
+                }
+                else
+                {
+                    lastship.transform.position = new Vector3(lastship.transform.position.x, lastship.transform.position.y + interval, lastship.transform.position.z);
+                }
                 movable = false;
             }
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                lastship.transform.position = new Vector3(lastship.transform.position.x, lastship.transform.position.y-interval, lastship.transform.position.z);
+                if (lastship.transform.rotation.z == 90 || lastship.transform.rotation.z == -90)
+                {
+                    lastship.transform.position -= new Vector3(interval, 0, 0);
+                }
+                else
+                {
+                    lastship.transform.position = new Vector3(lastship.transform.position.x, lastship.transform.position.y - interval, lastship.transform.position.z);
+                }
                 movable = false;
             }
         }
         recieveenemy();
-        Debug.Log("enemyship: "+enemyship[0].transform.position);
-        Debug.Log("empty: "+empty[2].transform.position);
-        
+        if(gameObject.tag == "2"&& isLocalPlayer)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                GameObject.Find("record active player").transform.position += new Vector3(8, 0, 0);
+            }
+        }
+        Debug.Log(GameObject.Find("hit recorder").transform.position);
+        Debug.Log(GameObject.Find("hit recorder").transform.rotation);
+
     }
 
     void CurrentClickedGameObject(GameObject dot)
@@ -179,25 +200,18 @@ public class drawgrid : NetworkBehaviour
                 }
                 if(value[Random.Range(0, value.Length)] == 0)
                 {
-                    Debug.Log("missed");
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
                     GameObject.Find("hit").GetComponent<Text>().text = "missed";   
                 }
                 else
                 {
-                    Debug.Log("hit!");
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
                     GameObject.Find("hit").GetComponent<Text>().text = "hit";
                     calhit(x,y);
-                    for(i=0; i<=4; i++)
-                    {
-                        if(hits[i] == health[i + 1])
-                        {
-                            GameObject.Find("hit").GetComponent<Text>().text = "hit!"+enemyship[i].name+" destroyed";
-                        }
-                    }
+                    
 
                 }
+                Debug.Log(p);
                 GameObject.Find("attack").transform.localScale = new Vector3(0, 0, 0);
             }
         }
@@ -282,7 +296,6 @@ public class drawgrid : NetworkBehaviour
 
     public void scout()
     {
-        Start();
         displaytactical();
         scoutable = true;
         GameObject.Find("scout").transform.localScale = new Vector3(0, 0, 0);
@@ -316,7 +329,6 @@ public class drawgrid : NetworkBehaviour
 
     public void attack()
     {
-        Start();
         displaytactical();
 
         attackable = true;
@@ -333,20 +345,25 @@ public class drawgrid : NetworkBehaviour
     public void calhit(float x, float y)
     {
         int returnvar = 0;
-        for(k=0; k<=4; k++)
+        float min = 0.0f;
+        for (k=0; k<=4; k++)
         {
-            float min = 0.0f;
             if(probability[Mathf.RoundToInt(x), Mathf.RoundToInt(y), k] >= min)
             {
                 min = probability[Mathf.RoundToInt(x), Mathf.RoundToInt(y), k];
                 returnvar = k;
             }
         }
+        Debug.Log(myship[returnvar].name);
         for(i=0; i<=4; i++)
         {
             if(returnvar == i)
             {
                 hits[i] += 1;
+                if (hits[i] == health[i])
+                {
+                    GameObject.Find("hit").GetComponent<Text>().text = "hit!" + enemyship[i].name + " destroyed";
+                }
             }
         }
     }
@@ -355,13 +372,38 @@ public class drawgrid : NetworkBehaviour
     {
         for (i = 0; i <= 4; i++)
         {
+            temp[i] = enemyship[i].transform.position;
             enemyship[i].transform.position = empty[i].transform.position;
+            if(temp[i] != enemyship[i].transform.position)
+            {
+                movable = true;
+            }
         }
         hitted[0] = Mathf.RoundToInt(hitsrecorder.transform.position.x);
         hitted[1] = Mathf.RoundToInt(hitsrecorder.transform.position.y);
         hitted[2] = Mathf.RoundToInt(hitsrecorder.transform.position.z);
         hitted[3] = Mathf.RoundToInt(hitsrecorder.transform.rotation.x);
         hitted[4] = Mathf.RoundToInt(hitsrecorder.transform.rotation.y);
+        int a = 0;
+        for (i=0; i<=4; i++)
+        {
+            if (hitted[i] >= health[i])
+            {
+                if (isLocalPlayer) 
+                {
+                    gameObject.transform.position = myship[i].transform.position;
+                    GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
+                    GameObject.Find("hit").GetComponent<Text>().text = "NOOOOOOO! "+myship[i].name+" sunk!";
+                    animate(myship[i].transform.position);
+                    a += 1;
+                }
+            }
+        }
+        shipdestroyed = a;
+        if (shipdestroyed == 5)
+        {
+            Cmdendgame(gameObject.tag);
+        }
 
         if (Mathf.Round(GameObject.Find("record active player").transform.position.x) == 2 && gameObject.tag == "2" && isLocalPlayer)
         {
@@ -377,30 +419,68 @@ public class drawgrid : NetworkBehaviour
         }
     }
 
-    [Command]
-    public void Cmdsetenemy(Vector3[] playershippos, int[] hits)
+    public void animate(Vector3 pos)
     {
-        for(i=0; i<=4; i++)
+
+    }
+    void definemyship()
+    {
+        myship[0] = GameObject.Find("Patrol");
+        myship[1] = GameObject.Find("Destroyer");
+        myship[2] = GameObject.Find("Cruiser");
+        myship[3] = GameObject.Find("Battleship");
+        myship[4] = GameObject.Find("Carrier");
+    }
+    public void setenemies(Vector3[] playershippos, int[] hits, int active)
+    {
+        for (i = 0; i <= 4; i++)
         {
-            Debug.Log(empty[i].transform.position);
+            Debug.Log("empty: " + empty[i].transform.position);
             empty[i].transform.position = playershippos[i];
         }
 
         hitsrecorder.transform.position = new Vector3(hits[0], hits[1], hits[2]);
         hitsrecorder.transform.localScale = new Vector3(hits[3], hits[4], 0);
-        Debug.Log("enemysetted");
+        Debug.Log("enemy and hits setted");
 
-        if (Mathf.Round(GameObject.Find("record active player").transform.position.x) == 2)
+        GameObject.Find("record active player").transform.position = new Vector3(active, 0, 0);
+    }
+    [Command]
+    public void Cmdsetenemy(Vector3[] playershippos, int[] hits, int active)
+    {
+            for (i = 0; i <= 4; i++)
+            {
+                Debug.Log("empty: " + empty[i].transform.position);
+                empty[i].transform.position = playershippos[i];
+            }
+
+            hitsrecorder.transform.position = new Vector3(hits[0], hits[1], hits[2]);
+            hitsrecorder.transform.localScale = new Vector3(hits[3], hits[4], 0);
+            Debug.Log("enemy and hits setted");
+
+            GameObject.Find("record active player").transform.position = new Vector3(active, 0, 0);
+    }
+
+    [Command]
+    public void Cmdendgame(string loser)
+    {
+        GameObject.Find("endgame").GetComponent <CanvasScaler>().scaleFactor = 0;
+        if(loser == "1")
         {
-            GameObject.Find("record active player").transform.position = new Vector3(1, 0, 0);
+            GameObject.Find("endtext").GetComponent<Text>().text = "The winner is player2!";
         }
-        if(Mathf.Round(GameObject.Find("record active player").transform.position.x) == 1)
+        else
         {
-            GameObject.Find("record active player").transform.position = new Vector3(2, 0, 0);
+            GameObject.Find("endtext").GetComponent<Text>().text = "The winner is player1!";
+        }
+        if(loser == gameObject.tag && isLocalPlayer)
+        {
+            GameObject.Find("loseimage").transform.localScale = new Vector3(1, 1, 1);
+        }
+        if (loser != gameObject.tag && isLocalPlayer)
+        {
+            GameObject.Find("winimage").transform.localScale = new Vector3(1, 1, 1);
         }
     }
 
-  
-
-   
 }

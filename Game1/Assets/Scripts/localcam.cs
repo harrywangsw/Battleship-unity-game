@@ -36,7 +36,7 @@ public class localcam : MonoBehaviour
         pos.z += 10;
         pos.z -= 10;
         gameObject.GetComponent<Camera>().orthographicSize = gameObject.GetComponent<Camera>().orthographicSize - Input.mouseScrollDelta.y * 2.0f;
-        if (gameObject.GetComponent<Camera>().orthographicSize <= 0)
+        if (gameObject.GetComponent<Camera>().orthographicSize <= 0 || gameObject.GetComponent<Camera>().orthographicSize >= 90)
         {
             gameObject.GetComponent<Camera>().orthographicSize = gameObject.GetComponent<Camera>().orthographicSize + Input.mouseScrollDelta.y * 2.0f;
         }

@@ -46,7 +46,7 @@ public class movecam : NetworkBehaviour
             pos.z += 10;
             pos.z -= 10;
             Camera.main.GetComponent<Camera>().orthographicSize = Camera.main.GetComponent<Camera>().orthographicSize - Input.mouseScrollDelta.y * 2.0f;
-            if (Camera.main.GetComponent<Camera>().orthographicSize <= 0)
+            if (Camera.main.GetComponent<Camera>().orthographicSize <= 0|| Camera.main.GetComponent<Camera>().orthographicSize >= 90)
             {
                 Camera.main.GetComponent<Camera>().orthographicSize = Camera.main.GetComponent<Camera>().orthographicSize + Input.mouseScrollDelta.y * 2.0f;
             }

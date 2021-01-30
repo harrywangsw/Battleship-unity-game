@@ -84,12 +84,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 1e-39
-  myship:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   enemyship:
   - {fileID: 0}
   - {fileID: 0}
@@ -97,6 +91,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   empty:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  myship:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -114,6 +114,8 @@ MonoBehaviour:
   unscouted: {fileID: 21300000, guid: a30725ec189d28c4c8f64321bd0af72b, type: 3}
   hitted: 0000000000000000000000000000000000000000
   hits: 0000000000000000000000000000000000000000
+  health: 0100000001000000010000000100000001000000
+  shipdestroyed: 0
 --- !u!114 &5200342648536420908
 MonoBehaviour:
   m_ObjectHideFlags: 0
