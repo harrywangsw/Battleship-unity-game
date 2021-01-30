@@ -112,10 +112,12 @@ MonoBehaviour:
   movable: 0
   scouted: {fileID: 21300000, guid: 1f982cf8e9403524fb6bbc28822ffc4b, type: 3}
   unscouted: {fileID: 21300000, guid: a30725ec189d28c4c8f64321bd0af72b, type: 3}
+  radar: {fileID: -4507266678106395347, guid: ab11657888601a64fa4a09c54f00fd8b, type: 3}
   hitted: 0000000000000000000000000000000000000000
   hits: 0000000000000000000000000000000000000000
   health: 0100000001000000010000000100000001000000
   shipdestroyed: 0
+  tilemap: {fileID: 0}
 --- !u!114 &5200342648536420908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +144,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008cec14fa38b434488868f7f838fe04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 0}
 --- !u!1 &6466494886342224749
 GameObject:
   m_ObjectHideFlags: 0

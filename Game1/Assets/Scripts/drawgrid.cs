@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Mirror;
+using UnityEngine.Tilemaps;
 public class drawgrid : NetworkBehaviour
 {
     Vector3 gridx, gridy;
@@ -18,10 +19,11 @@ public class drawgrid : NetworkBehaviour
     float[,,] probability = new float[42, 36, 12];
     public GameObject[,] dot = new GameObject[42, 36];
     public bool scoutable, attackable, flip, movable = false;
-    public Sprite scouted, unscouted;
+    public Sprite scouted, unscouted, radar;
     public int[] hitted, hits;
     public  int[] health = new int[] {1,1,1,1,1};
     public int shipdestroyed = 0;
+    public Tilemap tilemap;
 
     void Start()
     {
@@ -82,13 +84,6 @@ public class drawgrid : NetworkBehaviour
     void Update()
     {
         quantumfield(empty);
-        /*if (gameObject.tag == "1" && isLocalPlayer)
-        {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                Cmdchangeposition();
-            }
-        }*/
         if (Input.GetMouseButtonDown(0)&&isLocalPlayer)
         {
             RaycastHit raycastHit;
@@ -174,6 +169,7 @@ public class drawgrid : NetworkBehaviour
                 {
                     p = 500;
                 }
+                Debug.Log("probability" + probability[Mathf.RoundToInt(x), Mathf.RoundToInt(y), k]);
             }
 
             if (scoutable)
@@ -182,7 +178,8 @@ public class drawgrid : NetworkBehaviour
                 dot.GetComponent<Text>().text = (p / 5.0f).ToString() + "%";
                 revealed[Mathf.RoundToInt(x), Mathf.RoundToInt(y)] = true;
                 GameObject.Find("scout").transform.localScale = new Vector3(0, 0, 0);
-                gameObject.GetComponent<changesprite>().ChangeTileTexture(new Vector3Int(Mathf.RoundToInt(x), Mathf.RoundToInt(y), 0), scouted);
+                tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
+                gameObject.GetComponent<changesprite>().ChangeTileTexture(tilemap, new Vector3Int(Mathf.RoundToInt(x), Mathf.RoundToInt(y), 0), scouted);
             }
 
             if (attackable == true)
@@ -201,12 +198,14 @@ public class drawgrid : NetworkBehaviour
                 if(value[Random.Range(0, value.Length)] == 0)
                 {
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
-                    GameObject.Find("hit").GetComponent<Text>().text = "missed";   
+                    GameObject.Find("hit").GetComponent<Text>().text = "missed";
+                    
                 }
                 else
                 {
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
                     GameObject.Find("hit").GetComponent<Text>().text = "hit";
+                    Debug.Log("hit");
                     calhit(x,y);
                     
 
@@ -241,7 +240,7 @@ public class drawgrid : NetworkBehaviour
                 {
                     Vector3 a = ship[k].transform.position - dot[i, j].GetComponent<Transform>().position;
                     float p = a.magnitude;
-                    probability[i,j,k] = Mathf.Pow(0.98f, p)*10000/8800*100;
+                    probability[i,j,k] = 100-p*0.1f;
                 }
             }
         }
@@ -272,17 +271,18 @@ public class drawgrid : NetworkBehaviour
     {
         
         GameObject.Find("return").transform.localScale = new Vector3(1, 1, 1);
-        for(i=0; i<enemyship.Length; i++)
+        for (i=0; i<enemyship.Length; i++)
         {
             myship[i].transform.localScale = new Vector3(0,0,0);
         }
+
 
         for (i = 0; i <= 41; i++)
         {
             for (j = 0; j <= 25; j++)
             {
-               
-
+                gameObject.GetComponent<changesprite>().ChangeTileTexture(GameObject.Find("Tilemap").GetComponent<Tilemap>(), new Vector3Int(i, j, 0), radar);
+                GameObject.Find("tactical grid").transform.localScale = new Vector3(1, 1, 1);
                 if (!revealed[i, j])
                 {
                     dot[i, j].GetComponent<Text>().text = "  ";
@@ -322,7 +322,8 @@ public class drawgrid : NetworkBehaviour
         {
             for (j = 0; j <= 25; j++) {
                 dot[i, j].GetComponent<Text>().color = new Color(0, 255, 0, 225);
-                gameObject.GetComponent<changesprite>().ChangeTileTexture(new Vector3Int(i, j, 0), unscouted);
+                GameObject.Find("tacticalTilemap").transform.position = new Vector3(1, 1, 1);
+                gameObject.GetComponent<changesprite>().ChangeTileTexture(GameObject.Find("Tilemap").GetComponent<Tilemap>(), new Vector3Int(i, j, 0), unscouted);
             }
         }
     }
@@ -370,14 +371,9 @@ public class drawgrid : NetworkBehaviour
 
     public void recieveenemy()
     {
-        for (i = 0; i <= 4; i++)
+        for(i=0; i<=4; i++)
         {
-            temp[i] = enemyship[i].transform.position;
             enemyship[i].transform.position = empty[i].transform.position;
-            if(temp[i] != enemyship[i].transform.position)
-            {
-                movable = true;
-            }
         }
         hitted[0] = Mathf.RoundToInt(hitsrecorder.transform.position.x);
         hitted[1] = Mathf.RoundToInt(hitsrecorder.transform.position.y);
@@ -393,7 +389,8 @@ public class drawgrid : NetworkBehaviour
                 {
                     gameObject.transform.position = myship[i].transform.position;
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
-                    GameObject.Find("hit").GetComponent<Text>().text = "NOOOOOOO! "+myship[i].name+" sunk!";
+                    GameObject.Find("destroyed").GetComponent<Text>().text = "NO! "+myship[i].name+" sunk!";
+                    GameObject.Find("ok text").GetComponent<Text>().text = "Okay... :(";
                     animate(myship[i].transform.position);
                     a += 1;
                 }
