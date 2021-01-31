@@ -20,6 +20,6 @@ Upcoming
 -Capturing/losing crew
 -tech skills
 -attacking range
--islands
+-procedural generated islands and harbors
 -weapon types
 
