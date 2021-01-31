@@ -21,7 +21,7 @@ public class drawgrid : NetworkBehaviour
     public bool scoutable, attackable, flip, movable;
     public Sprite scouted, unscouted, radar;
     public int[] hitted, hits;
-    public  int[] health = new int[] {1,1,1,1,1};
+    public  int[] health = new int[] {1,2,3,4,5};
     public int shipdestroyed, scoutamount, ROCscout, scoutarea, damage = 0;
     public Tilemap tilemap;
 
