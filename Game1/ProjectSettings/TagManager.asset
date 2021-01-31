@@ -18,6 +18,7 @@ TagManager:
   - 1
   - 2
   - empty
+  - countries
   layers:
   - Default
   - TransparentFX

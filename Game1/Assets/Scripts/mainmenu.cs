@@ -14,6 +14,7 @@ public class mainmenu : NetworkBehaviour
     Transform[] shipui;
     bool placeable;
     Camera cam;
+    public string selectedcountry;
     void Start()
     {
         b = GameObject.Find("networkmanager");
@@ -23,6 +24,11 @@ public class mainmenu : NetworkBehaviour
         interval = 16;
         defineobjects(0);
         playership = GameObject.FindGameObjectsWithTag("ship");
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("countries");
+        for (i = 0; i < cards.Length; i++)
+        {
+            cards[i].transform.localScale = new Vector3(0, 0, 0);
+        }
 
     }
 
@@ -54,8 +60,12 @@ public class mainmenu : NetworkBehaviour
     public void startmultiplayer()
     {
         b.GetComponent<NetworkManagerHUD>().showGUI = true;
-        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = false;
         c.transform.position = new Vector3(0, 0, -54.45f);
+        GameObject[] cards = GameObject.FindGameObjectsWithTag("countries");
+        for (i = 0; i < cards.Length; i++)
+        {
+            cards[i].transform.localScale = new Vector3(1,1,1);
+        }
     }
     public void defineobjects(int drawplace)
     {
@@ -91,5 +101,28 @@ public class mainmenu : NetworkBehaviour
         }
         s = (GameObject)(Instantiate(playership[shipnum], cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), Quaternion.identity));
         s.transform.localScale = new Vector3(8, 8, 0);
+    }
+
+    public void selectcountries(GameObject country)
+    {
+        switch (country.name)
+        {
+            case "USA":
+                selectedcountry = "USA";
+                break;
+            case "PRC":
+                selectedcountry = "PRC";
+                break;
+            case "ROC":
+                selectedcountry = "ROC";
+                break;
+            case "Britain":
+                selectedcountry = "Britain";
+                break;
+            case "Normal":
+                selectedcountry = "drawgrid";
+                break;
+        }
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = false;
     }
 }

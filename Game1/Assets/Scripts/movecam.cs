@@ -37,7 +37,7 @@ public class movecam : NetworkBehaviour
             {
                 pos.x -= velocity.x;
             }
-            if (pos.y >= 290 || pos.y <= 0)
+            if (pos.y >= 380 || pos.y <= 0)
             {
                 pos.y -= velocity.y;
             }

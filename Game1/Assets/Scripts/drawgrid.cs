@@ -18,11 +18,11 @@ public class drawgrid : NetworkBehaviour
     bool[,] revealed = new bool[42, 36];
     float[,,] probability = new float[42, 36, 12];
     public GameObject[,] dot = new GameObject[42, 36];
-    public bool scoutable, attackable, flip, movable = false;
+    public bool scoutable, attackable, flip, movable;
     public Sprite scouted, unscouted, radar;
     public int[] hitted, hits;
     public  int[] health = new int[] {1,1,1,1,1};
-    public int shipdestroyed = 0;
+    public int shipdestroyed, scoutamount, ROCscout, scoutarea, damage = 0;
     public Tilemap tilemap;
 
     void Start()
@@ -34,6 +34,8 @@ public class drawgrid : NetworkBehaviour
         hitted = new int[5];
         hits = new int[5];
         interval = GameObject.Find("Battleships-1200x675").GetComponent<mainmenu> ().interval;
+        damage = 1;
+        countrymanager();
         for (i = 0; i <= 41; i++)
         {
             for (j = 0; j <= 25; j++)
@@ -80,7 +82,7 @@ public class drawgrid : NetworkBehaviour
 
     }
 
-    
+    // Update is called once per frame
     void Update()
     {
         quantumfield(empty);
@@ -176,10 +178,16 @@ public class drawgrid : NetworkBehaviour
             {
                 Debug.Log("scouting");
                 dot.GetComponent<Text>().text = (p / 5.0f).ToString() + "%";
-                revealed[Mathf.RoundToInt(x), Mathf.RoundToInt(y)] = true;
                 GameObject.Find("scout").transform.localScale = new Vector3(0, 0, 0);
                 tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
-                gameObject.GetComponent<changesprite>().ChangeTileTexture(tilemap, new Vector3Int(Mathf.RoundToInt(x), Mathf.RoundToInt(y), 0), scouted);
+                for (i = -scoutarea; i <= scoutarea; i++)
+                {
+                    for (j = -scoutarea; j <= scoutarea; j++)
+                    {
+                        revealed[Mathf.RoundToInt(x) + i, Mathf.RoundToInt(y)+j] = true;
+                        gameObject.GetComponent<changesprite>().ChangeTileTexture(tilemap, new Vector3Int(Mathf.RoundToInt(x)+i, Mathf.RoundToInt(y)+j, 0), scouted);
+                    }
+                }
             }
 
             if (attackable == true)
@@ -240,7 +248,8 @@ public class drawgrid : NetworkBehaviour
                 {
                     Vector3 a = ship[k].transform.position - dot[i, j].GetComponent<Transform>().position;
                     float p = a.magnitude;
-                    probability[i,j,k] = 100-p*0.1f;
+                    probability[i, j, k] = Mathf.Pow(0.998f, p)*100;
+                    //probability[i,j,k] = 100-p*0.1f;
                 }
             }
         }
@@ -297,7 +306,11 @@ public class drawgrid : NetworkBehaviour
     public void scout()
     {
         displaytactical();
-        scoutable = true;
+        scoutamount += 1;
+        if (scoutamount <= ROCscout+1)
+        {
+            scoutable = true;
+        }
         GameObject.Find("scout").transform.localScale = new Vector3(0, 0, 0);
     }
 
@@ -360,8 +373,8 @@ public class drawgrid : NetworkBehaviour
         {
             if(returnvar == i)
             {
-                hits[i] += 1;
-                if (hits[i] == health[i])
+                hits[i] += damage;
+                if (hits[i] >= health[i])
                 {
                     GameObject.Find("hit").GetComponent<Text>().text = "hit!" + enemyship[i].name + " destroyed";
                 }
@@ -378,8 +391,8 @@ public class drawgrid : NetworkBehaviour
         hitted[0] = Mathf.RoundToInt(hitsrecorder.transform.position.x);
         hitted[1] = Mathf.RoundToInt(hitsrecorder.transform.position.y);
         hitted[2] = Mathf.RoundToInt(hitsrecorder.transform.position.z);
-        hitted[3] = Mathf.RoundToInt(hitsrecorder.transform.rotation.x);
-        hitted[4] = Mathf.RoundToInt(hitsrecorder.transform.rotation.y);
+        hitted[3] = Mathf.RoundToInt(hitsrecorder.transform.localScale.x);
+        hitted[4] = Mathf.RoundToInt(hitsrecorder.transform.localScale.y);
         int a = 0;
         for (i=0; i<=4; i++)
         {
@@ -391,7 +404,7 @@ public class drawgrid : NetworkBehaviour
                     GameObject.Find("hit").transform.localScale = new Vector3(1, 1, 1);
                     GameObject.Find("destroyed").GetComponent<Text>().text = "NO! "+myship[i].name+" sunk!";
                     GameObject.Find("ok text").GetComponent<Text>().text = "Okay... :(";
-                    animate(myship[i].transform.position);
+                    Debug.Log("number of ships destroyed: " + i);
                     a += 1;
                 }
             }
@@ -419,6 +432,28 @@ public class drawgrid : NetworkBehaviour
     public void animate(Vector3 pos)
     {
 
+    }
+
+    void countrymanager()
+    {
+        switch (GameObject.Find("Battleships-1200x675").GetComponent<mainmenu>().selectedcountry)
+        {
+            case "USA":
+                scoutarea = 1;
+                break;
+            case "ROC":
+                ROCscout = 1;
+                break;
+            case "RPC":
+                
+                break;
+            case "Britain":
+                damage = 2;
+                break;
+            case "drawgrid":
+                
+                break;
+        }
     }
     void definemyship()
     {
@@ -461,6 +496,7 @@ public class drawgrid : NetworkBehaviour
     [Command]
     public void Cmdendgame(string loser)
     {
+        Debug.Log("ending game");
         GameObject.Find("endgame").GetComponent <CanvasScaler>().scaleFactor = 0;
         if(loser == "1")
         {

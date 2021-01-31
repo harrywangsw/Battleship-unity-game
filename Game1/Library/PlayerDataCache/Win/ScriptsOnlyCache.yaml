@@ -84,53 +84,55 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11214}
     - Class: 114
-      Script: {instanceID: 11314}
+      Script: {instanceID: 11236}
     - Class: 114
-      Script: {instanceID: 11534}
+      Script: {instanceID: 11316}
     - Class: 114
-      Script: {instanceID: 11540}
+      Script: {instanceID: 11536}
     - Class: 114
-      Script: {instanceID: 11556}
+      Script: {instanceID: 11542}
     - Class: 114
-      Script: {instanceID: 11616}
+      Script: {instanceID: 11558}
     - Class: 114
-      Script: {instanceID: 12170}
+      Script: {instanceID: 11618}
     - Class: 114
-      Script: {instanceID: 12218}
+      Script: {instanceID: 12176}
     - Class: 114
-      Script: {instanceID: 12366}
+      Script: {instanceID: 12224}
     - Class: 114
-      Script: {instanceID: 12424}
+      Script: {instanceID: 12372}
     - Class: 114
-      Script: {instanceID: 12748}
+      Script: {instanceID: 12430}
     - Class: 114
-      Script: {instanceID: 13170}
+      Script: {instanceID: 12754}
     - Class: 114
-      Script: {instanceID: 13570}
+      Script: {instanceID: 13176}
     - Class: 114
-      Script: {instanceID: 13588}
+      Script: {instanceID: 13576}
     - Class: 114
-      Script: {instanceID: 14062}
+      Script: {instanceID: 13594}
     - Class: 114
-      Script: {instanceID: 14164}
+      Script: {instanceID: 14070}
     - Class: 114
-      Script: {instanceID: 14408}
+      Script: {instanceID: 14172}
     - Class: 114
-      Script: {instanceID: 14448}
+      Script: {instanceID: 14416}
     - Class: 114
-      Script: {instanceID: 14490}
+      Script: {instanceID: 14458}
     - Class: 114
-      Script: {instanceID: 14604}
+      Script: {instanceID: 14500}
     - Class: 114
-      Script: {instanceID: 14610}
+      Script: {instanceID: 14614}
     - Class: 114
-      Script: {instanceID: 14692}
+      Script: {instanceID: 14620}
     - Class: 114
-      Script: {instanceID: 14714}
+      Script: {instanceID: 14702}
     - Class: 114
-      Script: {instanceID: 14822}
+      Script: {instanceID: 14724}
     - Class: 114
-      Script: {instanceID: 14948}
+      Script: {instanceID: 14832}
+    - Class: 114
+      Script: {instanceID: 14958}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -416,6 +418,12 @@ ScriptsOnlyBuild:
     className: QuitButtonHUD
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ROC
+  - hash:
+      serializedVersion: 2
       Hash: 87cef3c82381dc586f6772c3e27561b6
     assemblyName: Unity.2D.Animation.Runtime.dll
     namespaceName: UnityEngine.Experimental.U2D.Animation
@@ -476,7 +484,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: 7ce5cbad8473245bd2b49a5b80d11561
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: changesprite
@@ -632,7 +640,7 @@ ScriptsOnlyBuild:
     className: PlayerController
   - hash:
       serializedVersion: 2
-      Hash: 6f8b32f490c75a60fab3fe118ae4dde3
+      Hash: a71dc474c5f94a5b7416cabe036923d3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: drawgrid
@@ -986,6 +994,12 @@ ScriptsOnlyBuild:
     className: TMP_TextInfoDebugTool
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: USA
+  - hash:
+      serializedVersion: 2
       Hash: 1088b99d0c88ca05dcb48022854c0cd7
     assemblyName: Mirror.Examples.dll
     namespaceName: Mirror.Examples.Pong
@@ -1172,6 +1186,12 @@ ScriptsOnlyBuild:
     className: TMP_StyleSheet
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Britain
+  - hash:
+      serializedVersion: 2
       Hash: 2bca67b5b15bd74f4ed58264903bca65
     assemblyName: Mirror.Components.dll
     namespaceName: Mirror
@@ -1220,7 +1240,7 @@ ScriptsOnlyBuild:
     className: TextMeshPro
   - hash:
       serializedVersion: 2
-      Hash: 4b7dda23233b6d50ddab47d3858d7a08
+      Hash: 32ae4a525bf7d81123aeefeb78e72c4c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: mainmenu
