@@ -1,0 +1,14 @@
+Navigate the maze and find the princess within
+Beware the enemies who believes you have sinned
+When touched by enemy, a Shakespearian line will appear
+Type the next line in the textbox before it disapear
+or else you'll go back to beginning under hateful glares
+Too dangerous to go along, it is
+Find the old man in the maze
+And recieve the map that'll guide you out of this place 
+Go, legendary hero, the princess awaits
+This is no English project for Computer Science is the way
+
+
+Controls--------------------------------------------------------------------------------------------------------------------------------
+Use wasd to move, m to open map (after aquiring it)
